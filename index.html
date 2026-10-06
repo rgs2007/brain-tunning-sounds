@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Brain Tuning Sounds</title>
-<meta name="description" content="Free binaural beats generator with white, pink and brown noise. Research-based presets for sleep, meditation, relaxation, focus and 40 Hz gamma, with a plain-language guide to what the studies say.">
+<meta name="description" content="Free binaural beats generator layered under white, pink or brown noise or ocean surf. Research-based presets for sleep, meditation, relaxation, focus and 40 Hz gamma, with a plain-language guide to what the studies say.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
@@ -190,7 +190,7 @@ details.tune[open] summary .caret { transform: rotate(180deg); }
 .ctl output { font-family: var(--f-mono); font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .ctl .hint { font-size: 0.8rem; color: var(--muted); }
 input[type="range"] { width: 100%; accent-color: var(--clay); min-height: 28px; }
-.seg { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .seg button {
   border: 0; background: transparent; padding: 9px 4px; cursor: pointer;
   font-size: 0.86rem; font-weight: 700; color: var(--muted);
@@ -258,7 +258,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   <header class="top">
     <div class="brand">
       <h1>Brain Tuning Sounds</h1>
-      <small>Binaural beats with white, pink or brown noise</small>
+      <small>Binaural beats layered under soft noise or surf</small>
     </div>
     <span class="chip" role="note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
@@ -274,8 +274,8 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
         <p class="preset-name" id="preset-name">Relax &middot; pink noise</p>
       </div>
       <div class="ears" aria-label="Tone sent to each ear">
-        <span>Left ear</span><b id="ear-left">245.0 Hz</b>
-        <span>Right ear</span><b id="ear-right">255.0 Hz</b>
+        <span>Left ear</span><b id="ear-left">195.0 Hz</b>
+        <span>Right ear</span><b id="ear-right">205.0 Hz</b>
       </div>
     </div>
 
@@ -317,9 +317,9 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
           <span class="hint" id="beat-hint">Alpha band (8–13 Hz)</span>
         </div>
         <div class="ctl">
-          <div class="ctl-head"><label for="carrier">Base tone</label><output id="carrier-out" for="carrier">250 Hz</output></div>
-          <input id="carrier" type="range" min="100" max="500" step="10" value="250">
-          <span class="hint">Beats are clearest with tones between 200 and 500 Hz</span>
+          <div class="ctl-head"><label for="carrier">Base tone</label><output id="carrier-out" for="carrier">200 Hz</output></div>
+          <input id="carrier" type="range" min="100" max="450" step="10" value="200">
+          <span class="hint">Lower tones sound softer. 150–250 Hz is gentle; higher tones make the beat sharper.</span>
         </div>
         <div class="ctl">
           <span class="lbl" id="noise-lbl">Background noise</span>
@@ -328,17 +328,18 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
             <button type="button" data-noise="white" aria-pressed="false">White</button>
             <button type="button" data-noise="pink" aria-pressed="true">Pink</button>
             <button type="button" data-noise="brown" aria-pressed="false">Brown</button>
+            <button type="button" data-noise="surf" aria-pressed="false">Surf</button>
           </div>
         </div>
         <div class="ctl">
-          <div class="ctl-head"><label for="mix">Beat vs noise</label><output id="mix-out" for="mix">60% beat</output></div>
-          <input id="mix" type="range" min="0" max="100" step="5" value="60">
-          <span class="hint">Keep the beat audible. It should sit just above the noise.</span>
+          <div class="ctl-head"><label for="level">Beat tone level</label><output id="level-out" for="level">6 dB under the noise</output></div>
+          <input id="level" type="range" min="-18" max="0" step="1" value="-6">
+          <span class="hint">Tucked under the noise, the pulse is felt more than heard. Raise it only if you lose the beat.</span>
         </div>
         <div class="ctl">
           <div class="ctl-head"><label for="volume">Volume</label><output id="volume-out" for="volume">40%</output></div>
           <input id="volume" type="range" min="0" max="100" step="1" value="40">
-          <span class="hint">Lower than you think. Comfortable conversation level or quieter.</span>
+          <span class="hint">Lower than you think. Quieter than normal conversation.</span>
         </div>
         <div class="ctl">
           <span class="lbl" id="timer-lbl">Stop after</span>
@@ -350,7 +351,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
             <button type="button" data-min="45" aria-pressed="false">45m</button>
             <button type="button" data-min="60" aria-pressed="false">60m</button>
           </div>
-          <span class="hint">Fades out over the last 20 seconds</span>
+          <span class="hint">Fades in over 10 seconds and out over the last 20</span>
         </div>
       </div>
       <div class="reset-row"><button class="ghost" id="reset" type="button">Back to preset values</button></div>
@@ -362,6 +363,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
     <section class="prose" aria-labelledby="how-title">
       <h2 id="how-title">How binaural beats work</h2>
       <p>Each ear gets a slightly different pure tone. With 245 Hz in the left ear and 255 Hz in the right, your brainstem combines them and you hear a soft pulsing at the difference: 10 Hz. That pulse does not exist in the air. It is created inside your auditory system, which is why it only works with headphones.</p>
+      <p>The Monroe Institute's Hemi-Sync, the longest-running binaural beat program, never plays the tones bare. It layers them under pink noise, music or ocean surf so you sense the pulse rather than hear two buzzing tones. This app works the same way: by default the beat tones sit several decibels under a soft noise bed, on low base tones, and fade in slowly.</p>
       <p>The idea behind using them is that brain activity may follow the pulse, nudging it toward the rhythm linked to a state like sleep or focus. Brain rhythms are grouped into bands by frequency, and each preset targets one band.</p>
       <p class="muted">The honest summary of the research: some controlled studies find small benefits for anxiety, attention and memory, but results are inconsistent, studies are mostly small, and evidence that the brain actually locks onto the beat is mixed. Treat this as a pleasant, low-risk tool to try, not a treatment.</p>
     </section>
@@ -377,12 +379,17 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
         <article class="noise-card">
           <h3>White noise</h3>
           <canvas data-spectrum="white" aria-hidden="true"></canvas>
-          <p>Equal energy at every frequency, so it sounds bright and hissy, like TV static. Good at masking sudden sounds. Some studies report better attention in people with ADHD while listening to white noise.</p>
+          <p>Equal energy at every frequency, so it sounds bright and hissy, like TV static. It is the harshest color, so it plays a little quieter and with the top hiss rounded off. Some studies report better attention in people with ADHD while listening to white noise.</p>
         </article>
         <article class="noise-card">
           <h3>Pink noise</h3>
           <canvas data-spectrum="pink" aria-hidden="true"></canvas>
           <p>Energy falls off as pitch rises, so it sounds balanced, like steady rain. This is the background most often used in binaural beat studies, and it has also been studied for deep sleep.</p>
+        </article>
+        <article class="noise-card">
+          <h3>Surf</h3>
+          <canvas data-spectrum="surf" aria-hidden="true"></canvas>
+          <p>Soft pink noise that swells and recedes every 10 seconds or so, like waves on a beach. Ocean surf is one of the beds the Monroe Institute uses under its Hemi-Sync beats. A good choice if steady noise feels flat.</p>
         </article>
         <article class="noise-card">
           <h3>Brown noise</h3>
@@ -412,6 +419,8 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
         <li>Lane, Kasian, Owens &amp; Marsh (1998). Binaural auditory beats affect vigilance performance and mood. <em>Physiology &amp; Behavior</em>. <a href="https://doi.org/10.1016/S0031-9384(97)00436-8">doi.org/10.1016/S0031-9384(97)00436-8</a></li>
         <li>Padmanabhan, Hildreth &amp; Laws (2005). A prospective, randomised, controlled study examining binaural beat audio and pre-operative anxiety. <em>Anaesthesia</em>. <a href="https://doi.org/10.1111/j.1365-2044.2005.04287.x">doi.org/10.1111/j.1365-2044.2005.04287.x</a></li>
         <li>Jirakittayakorn &amp; Wongsawat (2018). A novel insight of effects of a 3-Hz binaural beat on sleep stages during sleep. <em>Frontiers in Human Neuroscience</em>. <a href="https://doi.org/10.3389/fnhum.2018.00387">doi.org/10.3389/fnhum.2018.00387</a></li>
+        <li>Monroe Institute. The Hemi-Sync process: binaural beats mixed with music, pink sound and surf. <a href="https://hemi-sync.com/research-papers/the-hemi-sync-process/">hemi-sync.com/research-papers/the-hemi-sync-process</a></li>
+        <li>A parametric investigation of binaural beats for brain entrainment and enhancing sustained attention (2025). <em>Scientific Reports</em>. <a href="https://doi.org/10.1038/s41598-025-88517-z">doi.org/10.1038/s41598-025-88517-z</a></li>
         <li>Chaieb, Wilpert, Reber &amp; Fell (2015). Auditory beat stimulation and its effects on cognition and mood states. <em>Frontiers in Psychiatry</em>. <a href="https://doi.org/10.3389/fpsyt.2015.00070">doi.org/10.3389/fpsyt.2015.00070</a></li>
       </ol>
     </section>
@@ -444,24 +453,30 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
       evidence: "Some support", ev: "some" },
     { id: "gamma", name: "Gamma", min: 30, max: 45,
       assoc: "Information processing, memory and focused attention.",
-      research: "40 Hz is widely researched, mostly as flickering light and clicking sound in Alzheimer's studies rather than binaural beats. Gamma binaural studies are early and small, and beats above about 30 Hz are harder to hear.",
+      research: "40 Hz is widely researched, mostly as flickering light and clicking sound in Alzheimer's studies rather than binaural beats. In a 2025 study, 40 Hz beats on a 340 Hz tone helped sustained attention while a 400 Hz tone did not. Gamma studies are early and small.",
       evidence: "Preliminary", ev: "mixed" }
   ];
 
   var PRESETS = [
-    { id: "sleep", band: "delta", name: "Deep sleep", beat: 2, carrier: 200, noise: "brown", mix: 50, minutes: 45 },
-    { id: "meditate", band: "theta", name: "Meditation", beat: 6, carrier: 200, noise: "pink", mix: 55, minutes: 20 },
-    { id: "relax", band: "alpha", name: "Relax", beat: 10, carrier: 250, noise: "pink", mix: 60, minutes: 20 },
-    { id: "focus", band: "beta", name: "Focus", beat: 16, carrier: 250, noise: "pink", mix: 60, minutes: 30 },
-    { id: "gamma", band: "gamma", name: "40 Hz gamma", beat: 40, carrier: 400, noise: "white", mix: 70, minutes: 15 }
+    // level = beat tones relative to the noise bed, in dB (negative = under the noise, Hemi-Sync style)
+    { id: "sleep", band: "delta", name: "Deep sleep", beat: 2, carrier: 150, noise: "brown", level: -10, minutes: 45 },
+    { id: "meditate", band: "theta", name: "Meditation", beat: 6, carrier: 170, noise: "surf", level: -8, minutes: 20 },
+    { id: "relax", band: "alpha", name: "Relax", beat: 10, carrier: 200, noise: "pink", level: -7, minutes: 20 },
+    { id: "focus", band: "beta", name: "Focus", beat: 16, carrier: 220, noise: "pink", level: -5, minutes: 30 },
+    { id: "gamma", band: "gamma", name: "40 Hz gamma", beat: 40, carrier: 340, noise: "pink", level: -4, minutes: 15 }
   ];
 
-  var NOISE_NAMES = { none: "no noise", white: "white noise", pink: "pink noise", brown: "brown noise" };
-  var FADE_IN_S = 4;
+  var NOISE_NAMES = { none: "no noise", white: "white noise", pink: "pink noise", brown: "brown noise", surf: "surf" };
+  // Loudness trim per color at equal RMS: white sounds harshest, so it plays quieter.
+  var NOISE_TRIM = { none: 0, white: 0.45, pink: 0.8, brown: 1, surf: 0.85 };
+  var NOISE_RMS = 0.25;      // RMS each noise buffer is normalized to
+  var SURF_PERIOD_S = 11;    // one wave swell
+  var NOISE_LOWPASS_HZ = 9000;
+  var FADE_IN_S = 10;
   var FADE_OUT_S = 20;
   var STOP_FADE_S = 1.2;
   var NOISE_SECONDS = 12;
-  var MAX_OUTPUT = 0.5; // headroom so 100% volume never clips
+  var MAX_OUTPUT = 1; // noise peaks stay under 1.0 even at full volume, so nothing clips
 
   // ---------- State ----------
   var state = loadState() || Object.assign({ preset: "relax", volume: 40 }, presetSettings("relax"));
@@ -474,7 +489,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
 
   function presetSettings(id) {
     var p = findPreset(id);
-    return { beat: p.beat, carrier: p.carrier, noise: p.noise, mix: p.mix, minutes: p.minutes };
+    return { beat: p.beat, carrier: p.carrier, noise: p.noise, level: p.level, minutes: p.minutes };
   }
   function findPreset(id) {
     for (var i = 0; i < PRESETS.length; i++) if (PRESETS[i].id === id) return PRESETS[i];
@@ -486,15 +501,15 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   }
   function loadState() {
     try {
-      var raw = localStorage.getItem("bts_state");
+      var raw = localStorage.getItem("bts_state_v2");
       if (!raw) return null;
       var s = JSON.parse(raw);
-      if (typeof s.beat !== "number" || typeof s.carrier !== "number") return null;
+      if (typeof s.beat !== "number" || typeof s.carrier !== "number" || typeof s.level !== "number" || !(s.noise in NOISE_TRIM)) return null;
       return s;
     } catch (e) { return null; }
   }
   function saveState() {
-    try { localStorage.setItem("bts_state", JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
+    try { localStorage.setItem("bts_state_v2", JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
   }
 
   // ---------- Noise generation ----------
@@ -578,22 +593,40 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
     rg.connect(merger, 0, 1);
     left.start(); right.start();
 
+    // Noise chain: source -> swell (surf waves) -> gentle low-pass -> level -> master
     var noiseGain = ctx.createGain();
+    noiseGain.gain.value = 0;
     noiseGain.connect(master);
+    var lowpass = ctx.createBiquadFilter();
+    lowpass.type = "lowpass";
+    lowpass.frequency.value = NOISE_LOWPASS_HZ;
+    lowpass.Q.value = 0.5;
+    lowpass.connect(noiseGain);
+    var swell = ctx.createGain();
+    swell.gain.value = 1;
+    swell.connect(lowpass);
+    var lfo = ctx.createOscillator();
+    lfo.frequency.value = 1 / SURF_PERIOD_S;
+    var lfoDepth = ctx.createGain();
+    lfoDepth.gain.value = 0;
+    lfo.connect(lfoDepth);
+    lfoDepth.connect(swell.gain);
+    lfo.start();
 
-    return { ctx: ctx, master: master, beatGain: beatGain, noiseGain: noiseGain, left: left, right: right, noiseSrc: null, noiseType: null };
+    return { ctx: ctx, master: master, beatGain: beatGain, noiseGain: noiseGain, swell: swell, lfoDepth: lfoDepth, lowpass: lowpass, left: left, right: right, noiseSrc: null, noiseType: null };
   }
 
   function earFreqs() {
     return { left: state.carrier - state.beat / 2, right: state.carrier + state.beat / 2 };
   }
-  function mixGains() {
-    // Equal-power style mix so moving the slider doesn't change overall loudness much.
-    var m = state.mix / 100;
-    var beat = Math.sin(m * Math.PI / 2) * 0.55;
-    var noise = state.noise === "none" ? 0 : Math.cos(m * Math.PI / 2) * 0.9;
-    if (state.noise === "none") beat = 0.55;
-    return { beat: beat, noise: noise };
+  // Beat tones are set relative to a pink-noise reference so "-6 dB" means the same across colors.
+  // A sine of amplitude A has RMS A / sqrt(2). With no noise, the tones play at the reference level.
+  function levelGains() {
+    var noise = NOISE_TRIM[state.noise];
+    var refRms = NOISE_RMS * NOISE_TRIM.pink;
+    var db = state.noise === "none" ? -3 : state.level;
+    var toneRms = refRms * Math.pow(10, db / 20);
+    return { beat: toneRms * Math.SQRT2, noise: noise };
   }
   function masterLevel() {
     var v = state.volume / 100;
@@ -603,13 +636,17 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   function applyAudio(smooth) {
     if (!audio) return;
     var t = audio.ctx.currentTime;
-    var tc = smooth ? 0.08 : 0.01;
+    var tc = smooth ? 0.25 : 0.01; // slow glides so changes never jump
     var f = earFreqs();
     audio.left.frequency.setTargetAtTime(f.left, t, tc);
     audio.right.frequency.setTargetAtTime(f.right, t, tc);
-    var g = mixGains();
+    var g = levelGains();
     audio.beatGain.gain.setTargetAtTime(g.beat, t, tc);
     audio.noiseGain.gain.setTargetAtTime(g.noise, t, tc);
+    var surf = state.noise === "surf";
+    audio.swell.gain.setTargetAtTime(surf ? 0.6 : 1, t, 0.5);
+    audio.lfoDepth.gain.setTargetAtTime(surf ? 0.4 : 0, t, 0.5);
+    audio.lowpass.frequency.setTargetAtTime(surf ? 2500 : NOISE_LOWPASS_HZ, t, 0.5);
     setNoiseSource();
     if (playing && !isFadingOut()) {
       audio.master.gain.cancelScheduledValues(t);
@@ -639,11 +676,12 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
     }
     audio.noiseType = type;
     if (type === "none") return;
-    if (!noiseCache[type]) noiseCache[type] = makeNoiseBuffer(audio.ctx, type);
+    var color = type === "surf" ? "pink" : type;
+    if (!noiseCache[color]) noiseCache[color] = makeNoiseBuffer(audio.ctx, color);
     var src = audio.ctx.createBufferSource();
-    src.buffer = noiseCache[type];
+    src.buffer = noiseCache[color];
     src.loop = true;
-    src.connect(audio.noiseGain);
+    src.connect(audio.swell);
     src.start();
     audio.noiseSrc = src;
   }
@@ -766,12 +804,12 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
     $("beat-out").textContent = fmtHz(state.beat) + " Hz";
     $("beat-hint").textContent = band.name + " band (" + band.min + "–" + band.max + " Hz)" + (state.beat > 30 ? ". Beats this fast are subtle." : "");
     $("carrier-out").textContent = state.carrier + " Hz";
-    $("mix-out").textContent = state.noise === "none" ? "Beat only" : state.mix + "% beat";
-    $("mix").disabled = state.noise === "none";
+    $("level-out").textContent = state.noise === "none" ? "No noise to sit under" : levelText(state.level);
+    $("level").disabled = state.noise === "none";
     $("volume-out").textContent = state.volume + "%";
     $("beat").value = state.beat;
     $("carrier").value = state.carrier;
-    $("mix").value = state.mix;
+    $("level").value = state.level;
     $("volume").value = state.volume;
     setPressed("noise-seg", "noise", state.noise);
     setPressed("timer-seg", "min", String(state.minutes));
@@ -780,13 +818,16 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
       if (el) el.setAttribute("aria-pressed", String(!custom && state.preset === pp.id));
     });
   }
+  function levelText(db) {
+    return db === 0 ? "Same as the noise" : Math.abs(db) + " dB under the noise";
+  }
   function setPressed(groupId, attr, value) {
     var btns = $(groupId).querySelectorAll("button");
     for (var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-pressed", String(btns[i].dataset[attr] === value));
   }
   function isCustom() {
     var p = findPreset(state.preset);
-    return p.beat !== state.beat || p.carrier !== state.carrier || p.noise !== state.noise || p.mix !== state.mix;
+    return p.beat !== state.beat || p.carrier !== state.carrier || p.noise !== state.noise || p.level !== state.level;
   }
 
   function renderTransport(msg) {
@@ -890,7 +931,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
       var c = cards[i], cx = c.getContext("2d");
       var s = sizeCanvas(c, cx);
       var type = c.dataset.spectrum;
-      var slope = type === "white" ? 0 : (type === "pink" ? 1 : 2); // dB-per-octave-ish shape
+      var slope = type === "white" ? 0 : (type === "brown" ? 2 : 1); // dB-per-octave-ish shape
       cx.clearRect(0, 0, s.w, s.h);
       cx.strokeStyle = base; cx.lineWidth = 1;
       cx.beginPath(); cx.moveTo(0, s.h - 0.5); cx.lineTo(s.w, s.h - 0.5); cx.stroke();
@@ -899,6 +940,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
       for (var b = 0; b < bars; b++) {
         var octave = b / (bars - 1);
         var hgt = (1 - octave * slope * 0.42) * (s.h - 4);
+        if (type === "surf") hgt *= 0.6 + 0.4 * Math.sin(octave * Math.PI * 2.2);
         hgt = Math.max(3, hgt);
         cx.globalAlpha = 0.85;
         cx.fillRect(b * (bw + gap), s.h - hgt, bw, hgt);
@@ -930,7 +972,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   $("play").addEventListener("click", function () { if (playing) stop(); else start(); });
   $("beat").addEventListener("input", function (e) { state.beat = parseFloat(e.target.value); afterChange(true); });
   $("carrier").addEventListener("input", function (e) { state.carrier = parseInt(e.target.value, 10); afterChange(true); });
-  $("mix").addEventListener("input", function (e) { state.mix = parseInt(e.target.value, 10); afterChange(true); });
+  $("level").addEventListener("input", function (e) { state.level = parseInt(e.target.value, 10); afterChange(true); });
   $("volume").addEventListener("input", function (e) { state.volume = parseInt(e.target.value, 10); afterChange(true); });
   $("noise-seg").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
