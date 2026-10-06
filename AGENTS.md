@@ -18,6 +18,10 @@ The app has no build step. npm is used only to run tests.
 - `tests/browser/audio-tests.html` + `audio-tests.js` render the real audio graph with
   `OfflineAudioContext` and check what each ear receives. `tests/run-browser-tests.mjs` runs them
   headless.
+- `tests/run-browser-tests.mjs` also opens the real page and its single-file build, presses Play,
+  and checks the audio engine is running and audible.
+- `scripts/build-single-file.mjs` inlines `sound-engine.js` into one HTML file for hosts that block
+  separate script files (the published Claude artifact).
 - `.github/workflows/pages.yml` runs all tests, then deploys to GitHub Pages only if they pass.
 - `docs/ideas/` holds product ideas that are not built yet.
 
@@ -45,6 +49,7 @@ What the tests protect:
 - Each ear receives only its own tone (a broken channel merge once sent both tones to one ear).
 - Presets reproduce their study's ear tones and tone-to-noise balance.
 - Noise is stereo, independent per ear, steady in level, and nothing clips at full volume.
+- Pressing Play on the real page (and the single-file build) actually produces sound.
 
 ## Presets and research
 
@@ -63,5 +68,6 @@ What the tests protect:
 
 ## Deploy
 
-Pushing to `main` runs tests and then deploys. The published Claude artifact copy of the page
-needs `sound-engine.js` uploaded alongside it.
+Pushing to `main` runs tests and then deploys. The published Claude artifact cannot load
+`sound-engine.js` as a separate file, so publish the inlined build instead:
+`node scripts/build-single-file.mjs <out.html> --fragment`.

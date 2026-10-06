@@ -64,7 +64,12 @@ npm test
 - `npm run test:browser`: renders the real audio graph offline and checks that each ear gets
   only its own tone, both ears match, noise is stereo and steady, and nothing clips.
 
-GitHub Actions runs both on every push and pull request; Pages deploys only when they pass.
+The browser run also opens the real page and its single-file build and checks that Play
+produces sound. GitHub Actions runs everything on every push and pull request; Pages deploys
+only when it passes.
+
+`node scripts/build-single-file.mjs out.html` writes a one-file copy with the engine inlined,
+for hosts that block separate script files.
 
 ## Run locally
 

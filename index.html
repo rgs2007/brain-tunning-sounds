@@ -458,6 +458,12 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
 
   // Sound logic and the audio graph live in sound-engine.js (window.BrainTuning) so they can be tested.
   var BT = window.BrainTuning;
+  if (!BT) {
+    // sound-engine.js did not load (blocked or missing): say so instead of failing silently.
+    document.getElementById("status-main").textContent = "The sound engine could not load. Reload the page; if it keeps happening, try another browser.";
+    document.getElementById("play").disabled = true;
+    return;
+  }
   var BANDS = BT.BANDS, PRESETS = BT.PRESETS, NOISE_NAMES = BT.NOISE_NAMES;
   var findPreset = BT.findPreset, presetSettings = BT.presetSettings, bandFor = BT.bandFor;
 
@@ -488,13 +494,24 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
     try { localStorage.setItem("bts_state_v4", JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
   }
 
+  // Resolves to the live-noise worklet node, or null to use the looping-buffer fallback.
+  // Some hosts never settle addModule (file:// pages, strict sandboxes), so give up after
+  // WORKLET_TIMEOUT_MS rather than leaving Play waiting forever.
+  var WORKLET_TIMEOUT_MS = 1500;
   function loadNoiseWorklet(ctx) {
     if (!ctx.audioWorklet || typeof AudioWorkletNode === "undefined") return Promise.resolve(null);
-    var url = URL.createObjectURL(new Blob([BT.workletSource()], { type: "application/javascript" }));
-    return ctx.audioWorklet.addModule(url).then(function () {
-      var color = state.noise === "surf" ? "pink" : state.noise;
-      return new AudioWorkletNode(ctx, "bts-noise", { numberOfInputs: 0, numberOfOutputs: 1, outputChannelCount: [2], processorOptions: { type: color } });
-    }).catch(function () { return null; });
+    var loading;
+    try {
+      var url = URL.createObjectURL(new Blob([BT.workletSource()], { type: "application/javascript" }));
+      loading = ctx.audioWorklet.addModule(url).then(function () {
+        var color = state.noise === "surf" ? "pink" : state.noise;
+        return new AudioWorkletNode(ctx, "bts-noise", { numberOfInputs: 0, numberOfOutputs: 1, outputChannelCount: [2], processorOptions: { type: color } });
+      });
+    } catch (e) {
+      return Promise.resolve(null);
+    }
+    var timeout = new Promise(function (resolve) { setTimeout(function () { resolve(null); }, WORKLET_TIMEOUT_MS); });
+    return Promise.race([loading, timeout]).catch(function () { return null; });
   }
 
   function buildAudio() {
@@ -885,6 +902,9 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
     if (mq.addEventListener) mq.addEventListener("change", redraw); else if (mq.addListener) mq.addListener(redraw);
     new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
   }
+
+  // Read-only hook for the automated page tests.
+  window.BrainTuningApp = { engine: function () { return audio; }, isPlaying: function () { return playing; } };
 
   // ---------- Boot ----------
   renderPresets();
