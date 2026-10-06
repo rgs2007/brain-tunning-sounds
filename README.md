@@ -12,7 +12,7 @@ Live app: https://rgs2007.github.io/brain-tunning-sounds/
   | Preset      | Band  | Beat  | Base tone | Bed   | Beat level      | Timer  |
   |-------------|-------|-------|-----------|-------|-----------------|--------|
   | Deep sleep  | Delta | 2 Hz  | 150 Hz    | Brown | 10 dB under bed | 45 min |
-  | Meditation  | Theta | 6 Hz  | 170 Hz    | Surf  | 8 dB under bed  | 20 min |
+  | Meditation  | Theta | 6 Hz  | 170 Hz    | Pink  | 8 dB under bed  | 20 min |
   | Relax       | Alpha | 10 Hz | 200 Hz    | Pink  | 7 dB under bed  | 20 min |
   | Focus       | Beta  | 16 Hz | 220 Hz    | Pink  | 5 dB under bed  | 30 min |
   | 40 Hz gamma | Gamma | 40 Hz | 340 Hz    | Pink  | 4 dB under bed  | 15 min |
@@ -30,8 +30,10 @@ Live app: https://rgs2007.github.io/brain-tunning-sounds/
 
 Two sine oscillators are routed to separate stereo channels: the left ear gets
 `base − beat/2` and the right ear gets `base + beat/2`. The perceived beat is the difference.
-Noise is generated once per color into a looping stereo buffer (independent noise per ear,
-crossfaded loop point), using Paul Kellet's filter for pink noise and a leaky integrator for brown.
+Noise is generated continuously in an AudioWorklet (independent noise per ear), so there is
+no loop point, repetition or level dip; a 30 Hz high-pass removes sub-audible rumble drift.
+White, pink (Paul Kellet's filter) and brown (leaky integrator) are each scaled to the same RMS.
+Browsers without AudioWorklet fall back to a 40 second looping buffer with an equal-power crossfade.
 
 Headphones are required for the beat to form.
 
