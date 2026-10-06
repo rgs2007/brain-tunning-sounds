@@ -9,20 +9,23 @@ Live app: https://rgs2007.github.io/brain-tunning-sounds/
 
 - Five presets based on the frequencies used most in published studies:
 
-  | Preset      | Band  | Beat  | Base tone | Bed   | Beat level      | Timer  |
-  |-------------|-------|-------|-----------|-------|-----------------|--------|
-  | Deep sleep  | Delta | 2 Hz  | 150 Hz    | Brown | 10 dB under bed | 45 min |
-  | Meditation  | Theta | 6 Hz  | 170 Hz    | Pink  | 8 dB under bed  | 20 min |
-  | Relax       | Alpha | 10 Hz | 200 Hz    | Pink  | 7 dB under bed  | 20 min |
-  | Focus       | Beta  | 16 Hz | 220 Hz    | Pink  | 5 dB under bed  | 30 min |
-  | 40 Hz gamma | Gamma | 40 Hz | 340 Hz    | Pink  | 4 dB under bed  | 15 min |
+  | Preset      | Band  | Beat  | Base tone | Noise | Noise vol | Beat vol | Timer  |
+  |-------------|-------|-------|-----------|-------|-----------|----------|--------|
+  | Deep sleep  | Delta | 2 Hz  | 150 Hz    | Brown | 85%       | 48%      | 45 min |
+  | Meditation  | Theta | 6 Hz  | 170 Hz    | Pink  | 85%       | 54%      | 20 min |
+  | Relax       | Alpha | 10 Hz | 200 Hz    | Pink  | 85%       | 57%      | 20 min |
+  | Focus       | Beta  | 16 Hz | 220 Hz    | Pink  | 80%       | 60%      | 30 min |
+  | 40 Hz gamma | Gamma | 40 Hz | 340 Hz    | Pink  | 80%       | 64%      | 15 min |
+
+  Preset volumes put the beat tones 10, 8, 7, 5 and 4 dB under the noise respectively.
 
 - Monroe Institute (Hemi-Sync) style layering: the beat tones sit under a noise bed
   (white, pink, brown or swelling surf) instead of playing bare, on low base tones,
   with a 10 second fade-in and slow glides between settings. White noise plays quieter
   and every bed has its top hiss rounded off with a gentle low-pass filter.
 - Optional adjustments: beat frequency (1–40 Hz), base tone (100–450 Hz), noise bed,
-  beat tone level relative to the bed, volume and a sleep timer with a 20 second fade-out.
+  separate noise and beat volumes (with a live readout of how far the beat sits under the
+  noise), overall volume and a sleep timer with a 20 second fade-out.
 - A guide to each frequency band, what it is linked to, and how strong the evidence is.
 - Light and dark themes, keyboard support (Space toggles play), reduced-motion support.
 

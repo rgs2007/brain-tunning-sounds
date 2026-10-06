@@ -306,7 +306,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
 
   <details class="tune" id="tune">
     <summary>
-      <span>Adjust the sound <small>beat, tone, noise, timer</small></span>
+      <span>Adjust the sound <small>beat, tone, noise, volumes, timer</small></span>
       <svg class="caret" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
     </summary>
     <div class="tune-body">
@@ -332,14 +332,19 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
           </div>
         </div>
         <div class="ctl">
-          <div class="ctl-head"><label for="level">Beat tone level</label><output id="level-out" for="level">6 dB under the noise</output></div>
-          <input id="level" type="range" min="-18" max="0" step="1" value="-6">
-          <span class="hint">Tucked under the noise, the pulse is felt more than heard. Raise it only if you lose the beat.</span>
+          <div class="ctl-head"><label for="noise-vol">Noise volume</label><output id="noise-vol-out" for="noise-vol">85%</output></div>
+          <input id="noise-vol" type="range" min="0" max="100" step="1" value="85">
+          <span class="hint" id="noise-vol-hint">Background noise only. The beat is not affected.</span>
         </div>
         <div class="ctl">
-          <div class="ctl-head"><label for="volume">Volume</label><output id="volume-out" for="volume">40%</output></div>
+          <div class="ctl-head"><label for="beat-vol">Beat volume</label><output id="beat-vol-out" for="beat-vol">57%</output></div>
+          <input id="beat-vol" type="range" min="0" max="100" step="1" value="57">
+          <span class="hint" id="beat-vol-hint">Beat tones sit 7 dB under the noise</span>
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><label for="volume">Overall volume</label><output id="volume-out" for="volume">50%</output></div>
           <input id="volume" type="range" min="0" max="100" step="1" value="40">
-          <span class="hint">Lower than you think. Quieter than normal conversation.</span>
+          <span class="hint">Scales everything together. Keep it quieter than normal conversation.</span>
         </div>
         <div class="ctl">
           <span class="lbl" id="timer-lbl">Stop after</span>
@@ -363,7 +368,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
     <section class="prose" aria-labelledby="how-title">
       <h2 id="how-title">How binaural beats work</h2>
       <p>Each ear gets a slightly different pure tone. With 245 Hz in the left ear and 255 Hz in the right, your brainstem combines them and you hear a soft pulsing at the difference: 10 Hz. That pulse does not exist in the air. It is created inside your auditory system, which is why it only works with headphones.</p>
-      <p>The Monroe Institute's Hemi-Sync, the longest-running binaural beat program, never plays the tones bare. It layers them under pink noise, music or ocean surf so you sense the pulse rather than hear two buzzing tones. This app works the same way: by default the beat tones sit several decibels under a soft noise bed, on low base tones, and fade in slowly.</p>
+      <p>The Monroe Institute's Hemi-Sync, the longest-running binaural beat program, never plays the tones bare. It layers them under pink noise, music or ocean surf so you sense the pulse rather than hear two buzzing tones. This app works the same way: each preset puts the beat tones several decibels under a soft noise bed, on low base tones, and fade in slowly.</p>
       <p>The idea behind using them is that brain activity may follow the pulse, nudging it toward the rhythm linked to a state like sleep or focus. Brain rhythms are grouped into bands by frequency, and each preset targets one band.</p>
       <p class="muted">The honest summary of the research: some controlled studies find small benefits for anxiety, attention and memory, but results are inconsistent, studies are mostly small, and evidence that the brain actually locks onto the beat is mixed. Treat this as a pleasant, low-risk tool to try, not a treatment.</p>
     </section>
@@ -458,12 +463,13 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   ];
 
   var PRESETS = [
-    // level = beat tones relative to the noise bed, in dB (negative = under the noise, Hemi-Sync style)
-    { id: "sleep", band: "delta", name: "Deep sleep", beat: 2, carrier: 150, noise: "brown", level: -10, minutes: 45 },
-    { id: "meditate", band: "theta", name: "Meditation", beat: 6, carrier: 170, noise: "pink", level: -8, minutes: 20 },
-    { id: "relax", band: "alpha", name: "Relax", beat: 10, carrier: 200, noise: "pink", level: -7, minutes: 20 },
-    { id: "focus", band: "beta", name: "Focus", beat: 16, carrier: 220, noise: "pink", level: -5, minutes: 30 },
-    { id: "gamma", band: "gamma", name: "40 Hz gamma", beat: 40, carrier: 340, noise: "pink", level: -4, minutes: 15 }
+    // noiseVol / beatVol are independent 0-100 volumes. Preset values keep the beat tones a few dB
+    // under the noise (Hemi-Sync style): sleep -10 dB, meditation -8, relax -7, focus -5, gamma -4.
+    { id: "sleep", band: "delta", name: "Deep sleep", beat: 2, carrier: 150, noise: "brown", noiseVol: 85, beatVol: 48, minutes: 45 },
+    { id: "meditate", band: "theta", name: "Meditation", beat: 6, carrier: 170, noise: "pink", noiseVol: 85, beatVol: 54, minutes: 20 },
+    { id: "relax", band: "alpha", name: "Relax", beat: 10, carrier: 200, noise: "pink", noiseVol: 85, beatVol: 57, minutes: 20 },
+    { id: "focus", band: "beta", name: "Focus", beat: 16, carrier: 220, noise: "pink", noiseVol: 80, beatVol: 60, minutes: 30 },
+    { id: "gamma", band: "gamma", name: "40 Hz gamma", beat: 40, carrier: 340, noise: "pink", noiseVol: 80, beatVol: 64, minutes: 15 }
   ];
 
   var NOISE_NAMES = { none: "no noise", white: "white noise", pink: "pink noise", brown: "brown noise", surf: "surf" };
@@ -479,7 +485,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   var MAX_OUTPUT = 1; // noise peaks stay under 1.0 even at full volume, so nothing clips
 
   // ---------- State ----------
-  var state = loadState() || Object.assign({ preset: "relax", volume: 45 }, presetSettings("relax"));
+  var state = loadState() || Object.assign({ preset: "relax", volume: 50 }, presetSettings("relax"));
   var audio = null;
   var playing = false;
   var endsAt = 0;
@@ -489,7 +495,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
 
   function presetSettings(id) {
     var p = findPreset(id);
-    return { beat: p.beat, carrier: p.carrier, noise: p.noise, level: p.level, minutes: p.minutes };
+    return { beat: p.beat, carrier: p.carrier, noise: p.noise, noiseVol: p.noiseVol, beatVol: p.beatVol, minutes: p.minutes };
   }
   function findPreset(id) {
     for (var i = 0; i < PRESETS.length; i++) if (PRESETS[i].id === id) return PRESETS[i];
@@ -501,15 +507,15 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   }
   function loadState() {
     try {
-      var raw = localStorage.getItem("bts_state_v2");
+      var raw = localStorage.getItem("bts_state_v3");
       if (!raw) return null;
       var s = JSON.parse(raw);
-      if (typeof s.beat !== "number" || typeof s.carrier !== "number" || typeof s.level !== "number" || !(s.noise in NOISE_TRIM)) return null;
+      if (typeof s.beat !== "number" || typeof s.carrier !== "number" || typeof s.noiseVol !== "number" || typeof s.beatVol !== "number" || !(s.noise in NOISE_TRIM)) return null;
       return s;
     } catch (e) { return null; }
   }
   function saveState() {
-    try { localStorage.setItem("bts_state_v2", JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
+    try { localStorage.setItem("bts_state_v3", JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
   }
 
   // ---------- Noise generation ----------
@@ -660,14 +666,20 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   function earFreqs() {
     return { left: state.carrier - state.beat / 2, right: state.carrier + state.beat / 2 };
   }
-  // Beat tones are set relative to a pink-noise reference so "-6 dB" means the same across colors.
-  // A sine of amplitude A has RMS A / sqrt(2). With no noise, the tones play at the reference level.
+  // Both layers share one scale: at 100% each plays at the pink-noise reference RMS.
+  // Sliders use a squared curve so equal steps sound like equal changes.
+  // A sine of amplitude A has RMS A / sqrt(2).
+  function sliderGain(pct) { var v = pct / 100; return v * v; }
   function levelGains() {
-    var noise = NOISE_TRIM[state.noise];
     var refRms = NOISE_RMS * NOISE_TRIM.pink;
-    var db = state.noise === "none" ? -3 : state.level;
-    var toneRms = refRms * Math.pow(10, db / 20);
+    var noise = NOISE_TRIM[state.noise] * sliderGain(state.noiseVol);
+    var toneRms = refRms * sliderGain(state.beatVol);
     return { beat: toneRms * Math.SQRT2, noise: noise };
+  }
+  // How far the beat tones sit under (or over) the noise, in dB, for the hint text.
+  function beatVsNoiseDb() {
+    if (state.noise === "none" || state.noiseVol === 0 || state.beatVol === 0) return null;
+    return 40 * Math.log10(state.beatVol / state.noiseVol);
   }
   function masterLevel() {
     var v = state.volume / 100;
@@ -862,12 +874,15 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
     $("beat-out").textContent = fmtHz(state.beat) + " Hz";
     $("beat-hint").textContent = band.name + " band (" + band.min + "–" + band.max + " Hz)" + (state.beat > 30 ? ". Beats this fast are subtle." : "");
     $("carrier-out").textContent = state.carrier + " Hz";
-    $("level-out").textContent = state.noise === "none" ? "No noise to sit under" : levelText(state.level);
-    $("level").disabled = state.noise === "none";
+    $("noise-vol-out").textContent = state.noise === "none" ? "Off" : state.noiseVol + "%";
+    $("noise-vol").disabled = state.noise === "none";
+    $("beat-vol-out").textContent = state.beatVol + "%";
+    $("beat-vol-hint").textContent = beatHint();
     $("volume-out").textContent = state.volume + "%";
     $("beat").value = state.beat;
     $("carrier").value = state.carrier;
-    $("level").value = state.level;
+    $("noise-vol").value = state.noiseVol;
+    $("beat-vol").value = state.beatVol;
     $("volume").value = state.volume;
     setPressed("noise-seg", "noise", state.noise);
     setPressed("timer-seg", "min", String(state.minutes));
@@ -876,8 +891,14 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
       if (el) el.setAttribute("aria-pressed", String(!custom && state.preset === pp.id));
     });
   }
-  function levelText(db) {
-    return db === 0 ? "Same as the noise" : Math.abs(db) + " dB under the noise";
+  function beatHint() {
+    if (state.beatVol === 0) return "Beat is muted";
+    var db = beatVsNoiseDb();
+    if (db === null) return "Playing on its own, without noise";
+    var r = Math.round(db);
+    if (r === 0) return "Beat tones are as loud as the noise";
+    if (r > 0) return "Beat tones sit " + r + " dB over the noise. Lower it if it feels harsh.";
+    return "Beat tones sit " + (-r) + " dB under the noise";
   }
   function setPressed(groupId, attr, value) {
     var btns = $(groupId).querySelectorAll("button");
@@ -885,7 +906,7 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   }
   function isCustom() {
     var p = findPreset(state.preset);
-    return p.beat !== state.beat || p.carrier !== state.carrier || p.noise !== state.noise || p.level !== state.level;
+    return p.beat !== state.beat || p.carrier !== state.carrier || p.noise !== state.noise || p.noiseVol !== state.noiseVol || p.beatVol !== state.beatVol;
   }
 
   function renderTransport(msg) {
@@ -1030,7 +1051,8 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   $("play").addEventListener("click", function () { if (playing) stop(); else start(); });
   $("beat").addEventListener("input", function (e) { state.beat = parseFloat(e.target.value); afterChange(true); });
   $("carrier").addEventListener("input", function (e) { state.carrier = parseInt(e.target.value, 10); afterChange(true); });
-  $("level").addEventListener("input", function (e) { state.level = parseInt(e.target.value, 10); afterChange(true); });
+  $("noise-vol").addEventListener("input", function (e) { state.noiseVol = parseInt(e.target.value, 10); afterChange(true); });
+  $("beat-vol").addEventListener("input", function (e) { state.beatVol = parseInt(e.target.value, 10); afterChange(true); });
   $("volume").addEventListener("input", function (e) { state.volume = parseInt(e.target.value, 10); afterChange(true); });
   $("noise-seg").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
