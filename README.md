@@ -7,21 +7,22 @@ Live app: https://rgs2007.github.io/brain-tunning-sounds/
 
 ## Features
 
-- Five presets based on the frequencies used most in published studies:
+- Five presets, each replicating the protocol of the strongest controlled study found for its band:
 
-  | Preset      | Band  | Beat  | Base tone | Noise | Noise vol | Beat vol | Timer  |
-  |-------------|-------|-------|-----------|-------|-----------|----------|--------|
-  | Deep sleep  | Delta | 2 Hz  | 150 Hz    | Brown | 85%       | 48%      | 45 min |
-  | Meditation  | Theta | 6 Hz  | 170 Hz    | Pink  | 85%       | 54%      | 20 min |
-  | Relax       | Alpha | 10 Hz | 200 Hz    | Pink  | 85%       | 57%      | 20 min |
-  | Focus       | Beta  | 16 Hz | 220 Hz    | Pink  | 80%       | 60%      | 30 min |
-  | 40 Hz gamma | Gamma | 40 Hz | 340 Hz    | Pink  | 80%       | 64%      | 15 min |
+  | Preset        | Band  | Study                         | Ear tones                         | Background                 | Tones vs noise | Length |
+  |---------------|-------|-------------------------------|-----------------------------------|----------------------------|----------------|--------|
+  | Deep sleep    | Delta | Jirakittayakorn 2018 (RCT)    | 250 / 253 Hz (3 Hz)               | none                       | tones only     | 3 h    |
+  | Meditation    | Theta | Jirakittayakorn 2017          | 250 / 256 Hz (6 Hz)               | none                       | tones only     | 30 min |
+  | Stress relief | Alpha | Chen 2025 (double-blind RCT)  | 335 / 345 Hz (10 Hz)              | pink noise                 | 3.5 dB under   | 15 min |
+  | Vigilance     | Beta  | Lane 1998 (double-blind)      | 200/216 Hz (16) + 300/324 Hz (24) | pink noise, 40–320 Hz      | 15 dB over     | 30 min |
+  | Attention     | Gamma | Melnichuk 2025                | 320 / 360 Hz (40 Hz)              | white noise                | 10 dB over     | 33 min |
 
-  Preset volumes put the beat tones 10, 8, 7, 5 and 4 dB under the noise respectively.
+  Tone-to-noise balance is computed from each noise color's loudness and bandwidth, so the
+  ratio matches the study. The page lists each study's design, settings and result.
 
-- Monroe Institute (Hemi-Sync) style layering: the beat tones sit under a noise bed
-  (white, pink, brown or swelling surf) instead of playing bare, on low base tones,
-  with a 10 second fade-in and slow glides between settings. White noise plays quieter
+- Monroe Institute (Hemi-Sync) style layering available through the volume sliders: tones can
+  sit under a noise bed (white, pink, brown or swelling surf), with a 10 second fade-in and slow
+  glides between settings. White noise plays quieter
   and every bed has its top hiss rounded off with a gentle low-pass filter.
 - Optional adjustments: beat frequency (1–40 Hz), base tone (100–450 Hz), noise bed,
   separate noise and beat volumes (with a live readout of how far the beat sits under the
