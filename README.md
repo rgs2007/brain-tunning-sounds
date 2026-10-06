@@ -32,7 +32,7 @@ Live app: https://rgs2007.github.io/brain-tunning-sounds/
 
 ## How it works
 
-Two sine oscillators are routed to separate stereo channels: the left ear gets
+The sound engine lives in `sound-engine.js`. Each tone pair is two sine oscillators routed to separate stereo channels: the left ear gets
 `base − beat/2` and the right ear gets `base + beat/2`. The perceived beat is the difference.
 Noise is generated continuously in an AudioWorklet (independent noise per ear), so there is
 no loop point, repetition or level dip; a 30 Hz high-pass removes sub-audible rumble drift.
@@ -48,6 +48,23 @@ Binaural beat research is promising but inconsistent. A 2019 meta-analysis
 attention, anxiety and pain perception, while a 2023 systematic review
 (Ingendoh et al., *PLOS ONE*) found that EEG evidence for brainwave entrainment is mixed.
 The app presents this plainly and is not a medical device.
+
+## Tests
+
+Every change must pass the full test suite before it is committed (see `AGENTS.md`).
+
+```sh
+npm install
+npx playwright install chromium
+npm test
+```
+
+- `npm run test:unit`: preset study values, tone-to-noise balance, levels and headroom,
+  noise generator RMS, worklet validity (Node's built-in test runner).
+- `npm run test:browser`: renders the real audio graph offline and checks that each ear gets
+  only its own tone, both ears match, noise is stereo and steady, and nothing clips.
+
+GitHub Actions runs both on every push and pull request; Pages deploys only when they pass.
 
 ## Run locally
 
