@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brain Tuning Sounds</title>
+<meta name="description" content="Free binaural beats generator with white, pink and brown noise. Research-based presets for sleep, meditation, relaxation, focus and 40 Hz gamma, with a plain-language guide to what the studies say.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one column. Player console first (readout, beat trace, play), then preset strip,
+   optional tuning drawer, then the reference guide. Flowing Soft palette: paper, ink, sage, plum, clay. */
+:root {
+  --bg: #f5f0e6;
+  --surface: #fffaf0;
+  --ink: #101214;
+  --muted: #5b5b55;
+  --line: rgba(16, 18, 20, 0.14);
+  --sage: #6f7868;
+  --sage-deep: #4b5548;
+  --plum: #3c3347;
+  --clay: #b56f45;
+  --console: #3c3347;
+  --console-ink: #f5f0e6;
+  --console-muted: rgba(245, 240, 230, 0.68);
+  --console-line: rgba(245, 240, 230, 0.16);
+  --trace: #e2a77f;
+  --trace-soft: rgba(226, 167, 127, 0.18);
+  --chip-bg: rgba(111, 120, 104, 0.14);
+  --warn-bg: rgba(181, 111, 69, 0.12);
+  --f-display: "Familjen Grotesk", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17141c;
+    --surface: #211d28;
+    --ink: #f1ebe0;
+    --muted: #b3ada4;
+    --line: rgba(241, 235, 224, 0.14);
+    --sage: #a5b09a;
+    --sage-deep: #c4ceb9;
+    --plum: #b9a9cc;
+    --clay: #dc9468;
+    --console: #2a2433;
+    --console-ink: #f1ebe0;
+    --console-muted: rgba(241, 235, 224, 0.64);
+    --console-line: rgba(241, 235, 224, 0.14);
+    --trace: #e9b088;
+    --trace-soft: rgba(233, 176, 136, 0.16);
+    --chip-bg: rgba(165, 176, 154, 0.16);
+    --warn-bg: rgba(220, 148, 104, 0.14);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17141c;
+  --surface: #211d28;
+  --ink: #f1ebe0;
+  --muted: #b3ada4;
+  --line: rgba(241, 235, 224, 0.14);
+  --sage: #a5b09a;
+  --sage-deep: #c4ceb9;
+  --plum: #b9a9cc;
+  --clay: #dc9468;
+  --console: #2a2433;
+  --console-ink: #f1ebe0;
+  --console-muted: rgba(241, 235, 224, 0.64);
+  --console-line: rgba(241, 235, 224, 0.14);
+  --trace: #e9b088;
+  --trace-soft: rgba(233, 176, 136, 0.16);
+  --chip-bg: rgba(165, 176, 154, 0.16);
+  --warn-bg: rgba(220, 148, 104, 0.14);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.55;
+}
+.wrap {
+  width: min(100%, 880px);
+  margin: 0 auto;
+  padding-inline: 16px;
+  padding-block: 20px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; letter-spacing: 0; }
+p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
+
+/* Header */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; flex-direction: column; gap: 2px; }
+.brand h1 { font-size: 1.7rem; font-weight: 700; line-height: 1.05; }
+.brand small { color: var(--muted); font-size: 0.85rem; }
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 12px; border-radius: 999px;
+  background: var(--chip-bg); color: var(--sage-deep);
+  font-size: 0.82rem; font-weight: 700;
+}
+.chip svg { width: 18px; height: 18px; flex: none; }
+
+/* Console */
+.console {
+  background: var(--console);
+  color: var(--console-ink);
+  border-radius: 8px;
+  padding: 22px;
+  display: grid;
+  gap: 18px;
+}
+.readout { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.readout-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.band-label {
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--trace);
+}
+.beat-hz {
+  font-family: var(--f-display); font-weight: 700;
+  font-size: clamp(3rem, 12vw, 4.6rem); line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+}
+.beat-hz .unit { font-size: 0.42em; font-weight: 500; color: var(--console-muted); margin-left: 6px; }
+.preset-name { color: var(--console-muted); font-size: 0.95rem; }
+.ears { display: grid; grid-template-columns: auto auto; gap: 2px 14px; font-family: var(--f-mono); font-size: 0.82rem; color: var(--console-muted); font-variant-numeric: tabular-nums; }
+.ears b { color: var(--console-ink); font-weight: 600; }
+
+.trace-box { position: relative; border-top: 1px solid var(--console-line); border-bottom: 1px solid var(--console-line); }
+canvas#trace { display: block; width: 100%; height: 96px; }
+.trace-caption { position: absolute; left: 0; bottom: 6px; font-family: var(--f-mono); font-size: 0.7rem; color: var(--console-muted); pointer-events: none; }
+
+.transport { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.play {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 52px; padding: 0 26px 0 20px;
+  border: 0; border-radius: 999px;
+  background: var(--console-ink); color: var(--console);
+  font-family: var(--f-display); font-weight: 700; font-size: 1.1rem;
+  cursor: pointer;
+}
+.play svg { width: 22px; height: 22px; }
+.status-line { display: flex; flex-direction: column; gap: 2px; font-size: 0.88rem; color: var(--console-muted); min-width: 0; }
+.status-line b { color: var(--console-ink); font-family: var(--f-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Presets */
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.section-head h2 { font-size: 1.35rem; }
+.section-head p { color: var(--muted); font-size: 0.9rem; }
+.presets { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.preset {
+  display: flex; flex-direction: column; gap: 6px; align-items: flex-start; text-align: left;
+  padding: 14px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--surface); cursor: pointer;
+}
+.preset:hover { border-color: var(--sage); }
+.preset[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.preset .p-band { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--clay); }
+.preset .p-name { font-family: var(--f-display); font-weight: 700; font-size: 1.08rem; line-height: 1.15; }
+.preset .p-spec { font-family: var(--f-mono); font-size: 0.72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Tuning drawer */
+details.tune { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+details.tune summary {
+  list-style: none; cursor: pointer; padding: 16px 18px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  font-family: var(--f-display); font-weight: 700; font-size: 1.1rem;
+}
+details.tune summary::-webkit-details-marker { display: none; }
+details.tune summary small { font-family: var(--f-body); font-weight: 400; font-size: 0.85rem; color: var(--muted); }
+details.tune summary .caret { transition: transform 0.2s; flex: none; }
+details.tune[open] summary .caret { transform: rotate(180deg); }
+.tune-body { padding: 4px 18px 20px; display: grid; gap: 20px; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px 28px; }
+.ctl { display: grid; gap: 6px; min-width: 0; }
+.ctl-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.ctl label, .ctl .lbl { font-weight: 700; font-size: 0.92rem; }
+.ctl output { font-family: var(--f-mono); font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ctl .hint { font-size: 0.8rem; color: var(--muted); }
+input[type="range"] { width: 100%; accent-color: var(--clay); min-height: 28px; }
+.seg { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button {
+  border: 0; background: transparent; padding: 9px 4px; cursor: pointer;
+  font-size: 0.86rem; font-weight: 700; color: var(--muted);
+}
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.seg.timer { grid-template-columns: repeat(6, 1fr); }
+.reset-row { display: flex; justify-content: flex-end; }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+
+/* Guide */
+.guide { display: grid; gap: 32px; }
+.prose { max-width: 66ch; display: grid; gap: 12px; color: var(--ink); }
+.prose p { color: var(--ink); }
+.prose .muted { color: var(--muted); }
+.bands { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.band-row {
+  display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 8px 22px;
+  padding: 16px 0; border-bottom: 1px solid var(--line);
+}
+.band-id { display: flex; flex-direction: column; gap: 2px; }
+.band-id h3 { font-size: 1.15rem; }
+.band-id .range { font-family: var(--f-mono); font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.band-text { display: grid; gap: 6px; min-width: 0; }
+.band-text p { font-size: 0.95rem; }
+.band-text .assoc { color: var(--muted); }
+.evidence {
+  justify-self: start; display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 9px; border-radius: 999px; font-size: 0.74rem; font-weight: 700;
+  border: 1px solid var(--line); color: var(--muted);
+}
+.evidence i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; display: inline-block; }
+.ev-some { color: var(--sage-deep); border-color: var(--sage); }
+.ev-mixed { color: var(--clay); border-color: var(--clay); }
+
+.noise-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.noise-card { border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 8px; align-content: start; background: var(--surface); }
+.noise-card h3 { font-size: 1.05rem; }
+.noise-card p { font-size: 0.92rem; color: var(--muted); }
+.noise-card canvas { width: 100%; height: 34px; display: block; }
+
+.safety { background: var(--warn-bg); border-radius: 8px; padding: 18px; display: grid; gap: 8px; }
+.safety ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.sources { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: 0.9rem; color: var(--muted); max-width: 72ch; }
+.sources a { color: var(--ink); }
+footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--line); padding-top: 16px; }
+
+@media (max-width: 560px) {
+  .console { padding: 18px 16px; }
+  .band-row { grid-template-columns: 1fr; }
+  .presets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .preset:last-child { grid-column: 1 / -1; }
+  .seg.timer { grid-template-columns: repeat(3, 1fr); }
+  .seg.timer button:nth-child(4) { border-left: 0; }
+  .seg.timer button:nth-child(n+4) { border-top: 1px solid var(--line); }
+}
+@media (prefers-reduced-motion: reduce) {
+  details.tune summary .caret { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <h1>Brain Tuning Sounds</h1>
+      <small>Binaural beats with white, pink or brown noise</small>
+    </div>
+    <span class="chip" role="note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+      Use headphones
+    </span>
+  </header>
+
+  <section class="console" aria-label="Player">
+    <div class="readout">
+      <div class="readout-main">
+        <span class="band-label" id="band-label">Alpha</span>
+        <div class="beat-hz" aria-live="polite"><span id="beat-readout">10</span><span class="unit">Hz beat</span></div>
+        <p class="preset-name" id="preset-name">Relax &middot; pink noise</p>
+      </div>
+      <div class="ears" aria-label="Tone sent to each ear">
+        <span>Left ear</span><b id="ear-left">245.0 Hz</b>
+        <span>Right ear</span><b id="ear-right">255.0 Hz</b>
+      </div>
+    </div>
+
+    <div class="trace-box">
+      <canvas id="trace" aria-hidden="true"></canvas>
+      <span class="trace-caption" id="trace-caption">Beat envelope, 1 second window</span>
+    </div>
+
+    <div class="transport">
+      <button class="play" id="play" type="button" aria-pressed="false">
+        <svg id="play-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
+        <span id="play-text">Play</span>
+      </button>
+      <div class="status-line">
+        <span id="status-main">Ready. Put on headphones, then press Play.</span>
+        <span id="status-timer"></span>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="presets-title">
+    <div class="section-head">
+      <h2 id="presets-title">Common settings</h2>
+      <p>Based on frequencies used most in published studies</p>
+    </div>
+    <div class="presets" id="presets"></div>
+  </section>
+
+  <details class="tune" id="tune">
+    <summary>
+      <span>Adjust the sound <small>beat, tone, noise, timer</small></span>
+      <svg class="caret" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </summary>
+    <div class="tune-body">
+      <div class="controls">
+        <div class="ctl">
+          <div class="ctl-head"><label for="beat">Beat frequency</label><output id="beat-out" for="beat">10 Hz</output></div>
+          <input id="beat" type="range" min="1" max="40" step="0.5" value="10">
+          <span class="hint" id="beat-hint">Alpha band (8–13 Hz)</span>
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><label for="carrier">Base tone</label><output id="carrier-out" for="carrier">250 Hz</output></div>
+          <input id="carrier" type="range" min="100" max="500" step="10" value="250">
+          <span class="hint">Beats are clearest with tones between 200 and 500 Hz</span>
+        </div>
+        <div class="ctl">
+          <span class="lbl" id="noise-lbl">Background noise</span>
+          <div class="seg" role="group" aria-labelledby="noise-lbl" id="noise-seg">
+            <button type="button" data-noise="none" aria-pressed="false">None</button>
+            <button type="button" data-noise="white" aria-pressed="false">White</button>
+            <button type="button" data-noise="pink" aria-pressed="true">Pink</button>
+            <button type="button" data-noise="brown" aria-pressed="false">Brown</button>
+          </div>
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><label for="mix">Beat vs noise</label><output id="mix-out" for="mix">60% beat</output></div>
+          <input id="mix" type="range" min="0" max="100" step="5" value="60">
+          <span class="hint">Keep the beat audible. It should sit just above the noise.</span>
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><label for="volume">Volume</label><output id="volume-out" for="volume">40%</output></div>
+          <input id="volume" type="range" min="0" max="100" step="1" value="40">
+          <span class="hint">Lower than you think. Comfortable conversation level or quieter.</span>
+        </div>
+        <div class="ctl">
+          <span class="lbl" id="timer-lbl">Stop after</span>
+          <div class="seg timer" role="group" aria-labelledby="timer-lbl" id="timer-seg">
+            <button type="button" data-min="0" aria-pressed="false">Off</button>
+            <button type="button" data-min="15" aria-pressed="false">15m</button>
+            <button type="button" data-min="20" aria-pressed="true">20m</button>
+            <button type="button" data-min="30" aria-pressed="false">30m</button>
+            <button type="button" data-min="45" aria-pressed="false">45m</button>
+            <button type="button" data-min="60" aria-pressed="false">60m</button>
+          </div>
+          <span class="hint">Fades out over the last 20 seconds</span>
+        </div>
+      </div>
+      <div class="reset-row"><button class="ghost" id="reset" type="button">Back to preset values</button></div>
+    </div>
+  </details>
+
+  <div class="guide">
+
+    <section class="prose" aria-labelledby="how-title">
+      <h2 id="how-title">How binaural beats work</h2>
+      <p>Each ear gets a slightly different pure tone. With 245 Hz in the left ear and 255 Hz in the right, your brainstem combines them and you hear a soft pulsing at the difference: 10 Hz. That pulse does not exist in the air. It is created inside your auditory system, which is why it only works with headphones.</p>
+      <p>The idea behind using them is that brain activity may follow the pulse, nudging it toward the rhythm linked to a state like sleep or focus. Brain rhythms are grouped into bands by frequency, and each preset targets one band.</p>
+      <p class="muted">The honest summary of the research: some controlled studies find small benefits for anxiety, attention and memory, but results are inconsistent, studies are mostly small, and evidence that the brain actually locks onto the beat is mixed. Treat this as a pleasant, low-risk tool to try, not a treatment.</p>
+    </section>
+
+    <section aria-labelledby="bands-title">
+      <div class="section-head"><h2 id="bands-title">Frequency bands</h2><p>What each range is linked to, and what studies found</p></div>
+      <div class="bands" id="bands"></div>
+    </section>
+
+    <section aria-labelledby="noise-title">
+      <div class="section-head"><h2 id="noise-title">Noise colors</h2><p>Optional masking layer under the beat</p></div>
+      <div class="noise-grid">
+        <article class="noise-card">
+          <h3>White noise</h3>
+          <canvas data-spectrum="white" aria-hidden="true"></canvas>
+          <p>Equal energy at every frequency, so it sounds bright and hissy, like TV static. Good at masking sudden sounds. Some studies report better attention in people with ADHD while listening to white noise.</p>
+        </article>
+        <article class="noise-card">
+          <h3>Pink noise</h3>
+          <canvas data-spectrum="pink" aria-hidden="true"></canvas>
+          <p>Energy falls off as pitch rises, so it sounds balanced, like steady rain. This is the background most often used in binaural beat studies, and it has also been studied for deep sleep.</p>
+        </article>
+        <article class="noise-card">
+          <h3>Brown noise</h3>
+          <canvas data-spectrum="brown" aria-hidden="true"></canvas>
+          <p>Even more weight in the low end, a deep rumble like a waterfall or airplane cabin. Popular for sleep and focus, with little formal research behind it yet. Many people find it the least tiring.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="safety" aria-labelledby="safety-title">
+      <h2 id="safety-title" style="font-size:1.2rem">Before you listen</h2>
+      <ul>
+        <li>Headphones are required. Speakers will not produce the beat.</li>
+        <li>Keep the volume low. Long listening at high volume can damage hearing.</li>
+        <li>Do not use while driving or doing anything that needs full alertness, especially the sleep and meditation settings.</li>
+        <li>If you have epilepsy, a seizure disorder or a heart condition, or you use a pacemaker, talk to a doctor first.</li>
+        <li>This is not a medical device and does not treat any condition.</li>
+        <li>On phones, sound may stop when the screen locks. Keep this page open in the foreground.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="sources-title">
+      <div class="section-head"><h2 id="sources-title">Studies behind the presets</h2></div>
+      <ol class="sources">
+        <li>Garcia-Argibay, Santed &amp; Reales (2019). Efficacy of binaural auditory beats in cognition, anxiety, and pain perception: a meta-analysis. <em>Psychological Research</em>. <a href="https://doi.org/10.1007/s00426-018-1066-8">doi.org/10.1007/s00426-018-1066-8</a></li>
+        <li>Ingendoh, Posny &amp; Heine (2023). Binaural beats to entrain the brain? A systematic review of the effects on brain oscillatory activity. <em>PLOS ONE</em>. <a href="https://doi.org/10.1371/journal.pone.0286023">doi.org/10.1371/journal.pone.0286023</a></li>
+        <li>Lane, Kasian, Owens &amp; Marsh (1998). Binaural auditory beats affect vigilance performance and mood. <em>Physiology &amp; Behavior</em>. <a href="https://doi.org/10.1016/S0031-9384(97)00436-8">doi.org/10.1016/S0031-9384(97)00436-8</a></li>
+        <li>Padmanabhan, Hildreth &amp; Laws (2005). A prospective, randomised, controlled study examining binaural beat audio and pre-operative anxiety. <em>Anaesthesia</em>. <a href="https://doi.org/10.1111/j.1365-2044.2005.04287.x">doi.org/10.1111/j.1365-2044.2005.04287.x</a></li>
+        <li>Jirakittayakorn &amp; Wongsawat (2018). A novel insight of effects of a 3-Hz binaural beat on sleep stages during sleep. <em>Frontiers in Human Neuroscience</em>. <a href="https://doi.org/10.3389/fnhum.2018.00387">doi.org/10.3389/fnhum.2018.00387</a></li>
+        <li>Chaieb, Wilpert, Reber &amp; Fell (2015). Auditory beat stimulation and its effects on cognition and mood states. <em>Frontiers in Psychiatry</em>. <a href="https://doi.org/10.3389/fpsyt.2015.00070">doi.org/10.3389/fpsyt.2015.00070</a></li>
+      </ol>
+    </section>
+
+    <footer>Brain Tuning Sounds is a free product-lab experiment by <a href="https://www.flowingsoft.com/">Flowing Soft</a>. All sound is generated in your browser. Nothing is recorded or uploaded.</footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Data ----------
+  var BANDS = [
+    { id: "delta", name: "Delta", min: 0.5, max: 4,
+      assoc: "Deep, dreamless sleep and the body's recovery phase.",
+      research: "Small studies link delta beats to more time in deep sleep and to lower anxiety before surgery. Sample sizes are small.",
+      evidence: "Limited", ev: "mixed" },
+    { id: "theta", name: "Theta", min: 4, max: 8,
+      assoc: "Drowsiness, deep relaxation, meditation and the edge of sleep.",
+      research: "Used in many meditation and relaxation studies. Some report calmer mood; brain recordings show inconsistent change.",
+      evidence: "Mixed", ev: "mixed" },
+    { id: "alpha", name: "Alpha", min: 8, max: 13,
+      assoc: "Relaxed but awake, eyes closed, calm attention.",
+      research: "Frequently studied for anxiety and mood. Results vary between studies, and alpha entrainment is not reliably shown.",
+      evidence: "Mixed", ev: "mixed" },
+    { id: "beta", name: "Beta", min: 13, max: 30,
+      assoc: "Active thinking, alertness and sustained attention.",
+      research: "A classic study found beta beats (16 and 24 Hz) in pink noise improved vigilance and mood compared with theta/delta beats. Later work is mixed.",
+      evidence: "Some support", ev: "some" },
+    { id: "gamma", name: "Gamma", min: 30, max: 45,
+      assoc: "Information processing, memory and focused attention.",
+      research: "40 Hz is widely researched, mostly as flickering light and clicking sound in Alzheimer's studies rather than binaural beats. Gamma binaural studies are early and small, and beats above about 30 Hz are harder to hear.",
+      evidence: "Preliminary", ev: "mixed" }
+  ];
+
+  var PRESETS = [
+    { id: "sleep", band: "delta", name: "Deep sleep", beat: 2, carrier: 200, noise: "brown", mix: 50, minutes: 45 },
+    { id: "meditate", band: "theta", name: "Meditation", beat: 6, carrier: 200, noise: "pink", mix: 55, minutes: 20 },
+    { id: "relax", band: "alpha", name: "Relax", beat: 10, carrier: 250, noise: "pink", mix: 60, minutes: 20 },
+    { id: "focus", band: "beta", name: "Focus", beat: 16, carrier: 250, noise: "pink", mix: 60, minutes: 30 },
+    { id: "gamma", band: "gamma", name: "40 Hz gamma", beat: 40, carrier: 400, noise: "white", mix: 70, minutes: 15 }
+  ];
+
+  var NOISE_NAMES = { none: "no noise", white: "white noise", pink: "pink noise", brown: "brown noise" };
+  var FADE_IN_S = 4;
+  var FADE_OUT_S = 20;
+  var STOP_FADE_S = 1.2;
+  var NOISE_SECONDS = 12;
+  var MAX_OUTPUT = 0.5; // headroom so 100% volume never clips
+
+  // ---------- State ----------
+  var state = loadState() || Object.assign({ preset: "relax", volume: 40 }, presetSettings("relax"));
+  var audio = null;
+  var playing = false;
+  var endsAt = 0;
+  var stopTimeout = null;
+  var tickInterval = null;
+  var wakeLock = null;
+
+  function presetSettings(id) {
+    var p = findPreset(id);
+    return { beat: p.beat, carrier: p.carrier, noise: p.noise, mix: p.mix, minutes: p.minutes };
+  }
+  function findPreset(id) {
+    for (var i = 0; i < PRESETS.length; i++) if (PRESETS[i].id === id) return PRESETS[i];
+    return PRESETS[2];
+  }
+  function bandFor(hz) {
+    for (var i = 0; i < BANDS.length; i++) if (hz < BANDS[i].max) return BANDS[i];
+    return BANDS[BANDS.length - 1];
+  }
+  function loadState() {
+    try {
+      var raw = localStorage.getItem("bts_state");
+      if (!raw) return null;
+      var s = JSON.parse(raw);
+      if (typeof s.beat !== "number" || typeof s.carrier !== "number") return null;
+      return s;
+    } catch (e) { return null; }
+  }
+  function saveState() {
+    try { localStorage.setItem("bts_state", JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
+  }
+
+  // ---------- Noise generation ----------
+  // Each channel gets independent noise. The buffer is longer than needed and its tail is
+  // crossfaded into its head, so looping has no audible seam (matters most for brown noise).
+  var noiseCache = {};
+  function makeNoiseBuffer(ctx, type) {
+    var rate = ctx.sampleRate;
+    var fade = Math.floor(rate * 0.5);
+    var len = Math.floor(rate * NOISE_SECONDS);
+    var buffer = ctx.createBuffer(2, len, rate);
+    for (var ch = 0; ch < 2; ch++) {
+      var raw = generateNoise(type, len + fade);
+      var out = buffer.getChannelData(ch);
+      for (var i = 0; i < len; i++) out[i] = raw[i];
+      for (var j = 0; j < fade; j++) {
+        var t = j / fade;
+        out[j] = raw[len + j] * (1 - t) + raw[j] * t;
+      }
+      normalize(out);
+    }
+    return buffer;
+  }
+  function generateNoise(type, n) {
+    var data = new Float32Array(n);
+    var b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, last = 0;
+    for (var i = 0; i < n; i++) {
+      var w = Math.random() * 2 - 1;
+      if (type === "white") {
+        data[i] = w;
+      } else if (type === "pink") {
+        // Paul Kellet's refined pink filter
+        b0 = 0.99886 * b0 + w * 0.0555179;
+        b1 = 0.99332 * b1 + w * 0.0750759;
+        b2 = 0.96900 * b2 + w * 0.1538520;
+        b3 = 0.86650 * b3 + w * 0.3104856;
+        b4 = 0.55000 * b4 + w * 0.5329522;
+        b5 = -0.7616 * b5 - w * 0.0168980;
+        data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362;
+        b6 = w * 0.115926;
+      } else {
+        // Leaky integrator: brown (red) noise without drifting off to DC
+        last = (last + 0.02 * w) / 1.02;
+        data[i] = last;
+      }
+    }
+    return data;
+  }
+  function normalize(arr) {
+    var sum = 0;
+    for (var i = 0; i < arr.length; i++) sum += arr[i] * arr[i];
+    var rms = Math.sqrt(sum / arr.length) || 1;
+    var k = 0.25 / rms; // equal loudness-ish across colors by RMS
+    for (var j = 0; j < arr.length; j++) {
+      var v = arr[j] * k;
+      arr[j] = v > 1 ? 1 : (v < -1 ? -1 : v);
+    }
+  }
+
+  // ---------- Audio graph ----------
+  function buildAudio() {
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    var ctx = new Ctx();
+    var master = ctx.createGain();
+    master.gain.value = 0;
+    master.connect(ctx.destination);
+
+    var merger = ctx.createChannelMerger(2);
+    var beatGain = ctx.createGain();
+    merger.connect(beatGain);
+    beatGain.connect(master);
+
+    var left = ctx.createOscillator();
+    var right = ctx.createOscillator();
+    left.type = "sine"; right.type = "sine";
+    var lg = ctx.createGain(), rg = ctx.createGain();
+    lg.gain.value = 1; rg.gain.value = 1;
+    left.connect(lg); right.connect(rg);
+    lg.connect(merger, 0, 0);
+    rg.connect(merger, 0, 1);
+    left.start(); right.start();
+
+    var noiseGain = ctx.createGain();
+    noiseGain.connect(master);
+
+    return { ctx: ctx, master: master, beatGain: beatGain, noiseGain: noiseGain, left: left, right: right, noiseSrc: null, noiseType: null };
+  }
+
+  function earFreqs() {
+    return { left: state.carrier - state.beat / 2, right: state.carrier + state.beat / 2 };
+  }
+  function mixGains() {
+    // Equal-power style mix so moving the slider doesn't change overall loudness much.
+    var m = state.mix / 100;
+    var beat = Math.sin(m * Math.PI / 2) * 0.55;
+    var noise = state.noise === "none" ? 0 : Math.cos(m * Math.PI / 2) * 0.9;
+    if (state.noise === "none") beat = 0.55;
+    return { beat: beat, noise: noise };
+  }
+  function masterLevel() {
+    var v = state.volume / 100;
+    return v * v * MAX_OUTPUT; // perceptual curve
+  }
+
+  function applyAudio(smooth) {
+    if (!audio) return;
+    var t = audio.ctx.currentTime;
+    var tc = smooth ? 0.08 : 0.01;
+    var f = earFreqs();
+    audio.left.frequency.setTargetAtTime(f.left, t, tc);
+    audio.right.frequency.setTargetAtTime(f.right, t, tc);
+    var g = mixGains();
+    audio.beatGain.gain.setTargetAtTime(g.beat, t, tc);
+    audio.noiseGain.gain.setTargetAtTime(g.noise, t, tc);
+    setNoiseSource();
+    if (playing && !isFadingOut()) {
+      audio.master.gain.cancelScheduledValues(t);
+      audio.master.gain.setTargetAtTime(masterLevel(), t, 0.1);
+      scheduleFadeOut();
+    }
+  }
+  // Re-adds the end-of-session fade after any change that cancelled scheduled gain values.
+  function scheduleFadeOut() {
+    if (!endsAt) return;
+    var remain = (endsAt - Date.now()) / 1000;
+    var t = audio.ctx.currentTime;
+    var fadeStart = Math.max(0.5, remain - FADE_OUT_S);
+    audio.master.gain.setValueAtTime(masterLevel(), t + fadeStart);
+    audio.master.gain.linearRampToValueAtTime(0, t + Math.max(fadeStart + 0.1, remain));
+  }
+  function isFadingOut() {
+    return endsAt && (endsAt - Date.now()) / 1000 <= FADE_OUT_S;
+  }
+  function setNoiseSource() {
+    var type = state.noise;
+    if (audio.noiseType === type) return;
+    if (audio.noiseSrc) {
+      try { audio.noiseSrc.stop(); } catch (e) { /* already stopped */ }
+      audio.noiseSrc.disconnect();
+      audio.noiseSrc = null;
+    }
+    audio.noiseType = type;
+    if (type === "none") return;
+    if (!noiseCache[type]) noiseCache[type] = makeNoiseBuffer(audio.ctx, type);
+    var src = audio.ctx.createBufferSource();
+    src.buffer = noiseCache[type];
+    src.loop = true;
+    src.connect(audio.noiseGain);
+    src.start();
+    audio.noiseSrc = src;
+  }
+
+  // ---------- Transport ----------
+  function start() {
+    if (!audio) audio = buildAudio();
+    if (!audio) { setStatus("This browser cannot generate audio. Try a current version of Chrome, Safari, Edge or Firefox."); return; }
+    audio.ctx.resume();
+    playing = true;
+    applyAudio(false);
+    var t = audio.ctx.currentTime;
+    audio.master.gain.cancelScheduledValues(t);
+    audio.master.gain.setValueAtTime(audio.master.gain.value, t);
+    audio.master.gain.linearRampToValueAtTime(masterLevel(), t + FADE_IN_S);
+    scheduleTimer();
+    requestWakeLock();
+    renderTransport();
+    startTrace();
+  }
+
+  function stop(reason) {
+    if (!audio || !playing) return;
+    playing = false;
+    var t = audio.ctx.currentTime;
+    audio.master.gain.cancelScheduledValues(t);
+    audio.master.gain.setValueAtTime(audio.master.gain.value, t);
+    audio.master.gain.linearRampToValueAtTime(0, t + STOP_FADE_S);
+    clearTimer();
+    releaseWakeLock();
+    var ctx = audio.ctx;
+    setTimeout(function () { if (!playing) ctx.suspend(); }, STOP_FADE_S * 1000 + 100);
+    renderTransport(reason);
+  }
+
+  function scheduleTimer() {
+    clearTimer();
+    if (state.minutes > 0) {
+      endsAt = Date.now() + state.minutes * 60000;
+      scheduleFadeOut();
+      stopTimeout = setTimeout(function () { stop("Session finished."); }, state.minutes * 60000);
+    } else {
+      endsAt = 0;
+    }
+    tickInterval = setInterval(renderTimer, 1000);
+    renderTimer();
+  }
+  function clearTimer() {
+    clearTimeout(stopTimeout); stopTimeout = null;
+    clearInterval(tickInterval); tickInterval = null;
+    endsAt = 0;
+    renderTimer();
+  }
+
+  function requestWakeLock() {
+    if (!("wakeLock" in navigator)) return;
+    navigator.wakeLock.request("screen").then(function (lock) { wakeLock = lock; }).catch(function () { /* not allowed here */ });
+  }
+  function releaseWakeLock() {
+    if (wakeLock) { wakeLock.release().catch(function () {}); wakeLock = null; }
+  }
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && playing && !wakeLock) requestWakeLock();
+  });
+
+  // ---------- Rendering ----------
+  var $ = function (id) { return document.getElementById(id); };
+
+  function fmtHz(v) { return (Math.round(v * 10) / 10).toString(); }
+
+  function renderPresets() {
+    var host = $("presets");
+    host.innerHTML = "";
+    PRESETS.forEach(function (p) {
+      var band = BANDS.filter(function (b) { return b.id === p.band; })[0];
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "preset";
+      btn.id = "preset-" + p.id;
+      btn.setAttribute("aria-pressed", String(state.preset === p.id));
+      btn.innerHTML =
+        '<span class="p-band"></span><span class="p-name"></span><span class="p-spec"></span>';
+      btn.querySelector(".p-band").textContent = band.name;
+      btn.querySelector(".p-name").textContent = p.name;
+      btn.querySelector(".p-spec").textContent = p.beat + " Hz · " + (p.noise === "none" ? "no noise" : p.noise) + " · " + p.minutes + "m";
+      btn.addEventListener("click", function () { choosePreset(p.id); });
+      host.appendChild(btn);
+    });
+  }
+
+  function renderBands() {
+    var host = $("bands");
+    BANDS.forEach(function (b) {
+      var row = document.createElement("div");
+      row.className = "band-row";
+      row.innerHTML =
+        '<div class="band-id"><h3></h3><span class="range"></span></div>' +
+        '<div class="band-text"><p class="assoc"></p><p class="res"></p><span class="evidence"><i></i><span></span></span></div>';
+      row.querySelector("h3").textContent = b.name;
+      row.querySelector(".range").textContent = b.min + "–" + b.max + " Hz";
+      row.querySelector(".assoc").textContent = b.assoc;
+      row.querySelector(".res").textContent = b.research;
+      var ev = row.querySelector(".evidence");
+      ev.classList.add(b.ev === "some" ? "ev-some" : "ev-mixed");
+      ev.querySelector("span").textContent = "Evidence: " + b.evidence;
+      host.appendChild(row);
+    });
+  }
+
+  function renderReadout() {
+    var band = bandFor(state.beat);
+    var f = earFreqs();
+    $("band-label").textContent = band.name + " · " + band.min + "–" + band.max + " Hz";
+    $("beat-readout").textContent = fmtHz(state.beat);
+    var custom = isCustom();
+    var p = findPreset(state.preset);
+    $("preset-name").textContent = (custom ? "Custom" : p.name) + " · " + NOISE_NAMES[state.noise];
+    $("ear-left").textContent = f.left.toFixed(1) + " Hz";
+    $("ear-right").textContent = f.right.toFixed(1) + " Hz";
+    $("beat-out").textContent = fmtHz(state.beat) + " Hz";
+    $("beat-hint").textContent = band.name + " band (" + band.min + "–" + band.max + " Hz)" + (state.beat > 30 ? ". Beats this fast are subtle." : "");
+    $("carrier-out").textContent = state.carrier + " Hz";
+    $("mix-out").textContent = state.noise === "none" ? "Beat only" : state.mix + "% beat";
+    $("mix").disabled = state.noise === "none";
+    $("volume-out").textContent = state.volume + "%";
+    $("beat").value = state.beat;
+    $("carrier").value = state.carrier;
+    $("mix").value = state.mix;
+    $("volume").value = state.volume;
+    setPressed("noise-seg", "noise", state.noise);
+    setPressed("timer-seg", "min", String(state.minutes));
+    PRESETS.forEach(function (pp) {
+      var el = $("preset-" + pp.id);
+      if (el) el.setAttribute("aria-pressed", String(!custom && state.preset === pp.id));
+    });
+  }
+  function setPressed(groupId, attr, value) {
+    var btns = $(groupId).querySelectorAll("button");
+    for (var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-pressed", String(btns[i].dataset[attr] === value));
+  }
+  function isCustom() {
+    var p = findPreset(state.preset);
+    return p.beat !== state.beat || p.carrier !== state.carrier || p.noise !== state.noise || p.mix !== state.mix;
+  }
+
+  function renderTransport(msg) {
+    $("play").setAttribute("aria-pressed", String(playing));
+    $("play-text").textContent = playing ? "Stop" : "Play";
+    $("play-icon").innerHTML = playing
+      ? '<rect x="6" y="5" width="4.5" height="14" rx="1"/><rect x="13.5" y="5" width="4.5" height="14" rx="1"/>'
+      : '<path d="M7 4.5v15l13-7.5z"/>';
+    setStatus(msg || (playing ? "Playing. Close your eyes if you like." : "Ready. Put on headphones, then press Play."));
+  }
+  function setStatus(text) { $("status-main").textContent = text; }
+
+  function renderTimer() {
+    var el = $("status-timer");
+    if (!playing) { el.textContent = state.minutes ? "Timer: " + state.minutes + " min" : "Timer off"; return; }
+    if (!endsAt) { el.innerHTML = "Timer off · plays until you stop"; return; }
+    var left = Math.max(0, Math.round((endsAt - Date.now()) / 1000));
+    var m = Math.floor(left / 60), s = left % 60;
+    el.innerHTML = "";
+    el.append("Time left ");
+    var b = document.createElement("b");
+    b.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+    el.append(b);
+  }
+
+  // ---------- Beat trace ----------
+  // Draws the loudness envelope of the beat (|cos(pi * beat * t)|) over a 1 second window.
+  // It scrolls slowly while playing; it never flashes, so it is safe at any beat rate.
+  var trace = $("trace"), tctx = trace.getContext("2d");
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var traceRaf = null, traceOffset = 0, lastFrame = 0;
+
+  function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  function sizeCanvas(c, ctx2) {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var r = c.getBoundingClientRect();
+    c.width = Math.max(1, Math.round(r.width * dpr));
+    c.height = Math.max(1, Math.round(r.height * dpr));
+    ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { w: r.width, h: r.height };
+  }
+  var traceSize = { w: 0, h: 0 };
+
+  function drawTrace() {
+    var w = traceSize.w, h = traceSize.h;
+    if (!w) return;
+    tctx.clearRect(0, 0, w, h);
+    var mid = h * 0.45, amp = h * 0.36;
+    var stroke = cssVar("--trace"), soft = cssVar("--trace-soft"), grid = cssVar("--console-line");
+    tctx.strokeStyle = grid; tctx.lineWidth = 1;
+    tctx.beginPath(); tctx.moveTo(0, mid); tctx.lineTo(w, mid); tctx.stroke();
+    var beat = state.beat;
+    var steps = Math.max(200, Math.round(w * 2));
+    var level = playing ? 1 : 0.55;
+    tctx.beginPath();
+    for (var i = 0; i <= steps; i++) {
+      var x = (i / steps) * w;
+      var t = i / steps + traceOffset;
+      var env = Math.abs(Math.cos(Math.PI * beat * t)) * level;
+      var y = mid - env * amp;
+      if (i === 0) tctx.moveTo(x, y); else tctx.lineTo(x, y);
+    }
+    for (var k = steps; k >= 0; k--) {
+      var x2 = (k / steps) * w;
+      var t2 = k / steps + traceOffset;
+      var env2 = Math.abs(Math.cos(Math.PI * beat * t2)) * level;
+      tctx.lineTo(x2, mid + env2 * amp);
+    }
+    tctx.closePath();
+    tctx.fillStyle = soft; tctx.fill();
+    tctx.strokeStyle = stroke; tctx.lineWidth = 1.5;
+    tctx.beginPath();
+    for (var j = 0; j <= steps; j++) {
+      var x3 = (j / steps) * w;
+      var t3 = j / steps + traceOffset;
+      var y3 = mid - Math.abs(Math.cos(Math.PI * beat * t3)) * level * amp;
+      if (j === 0) tctx.moveTo(x3, y3); else tctx.lineTo(x3, y3);
+    }
+    tctx.stroke();
+    $("trace-caption").textContent = "Beat envelope · " + fmtHz(beat) + " pulses per second";
+  }
+  function startTrace() {
+    if (reduceMotion || traceRaf) return;
+    lastFrame = performance.now();
+    var loop = function (now) {
+      if (!playing) { traceRaf = null; drawTrace(); return; }
+      // Scroll at 1/8 real time so fast beats read as texture, not flicker.
+      traceOffset += (now - lastFrame) / 8000;
+      lastFrame = now;
+      drawTrace();
+      traceRaf = requestAnimationFrame(loop);
+    };
+    traceRaf = requestAnimationFrame(loop);
+  }
+
+  function drawSpectra() {
+    var cards = document.querySelectorAll("canvas[data-spectrum]");
+    var stroke = cssVar("--clay"), base = cssVar("--line");
+    for (var i = 0; i < cards.length; i++) {
+      var c = cards[i], cx = c.getContext("2d");
+      var s = sizeCanvas(c, cx);
+      var type = c.dataset.spectrum;
+      var slope = type === "white" ? 0 : (type === "pink" ? 1 : 2); // dB-per-octave-ish shape
+      cx.clearRect(0, 0, s.w, s.h);
+      cx.strokeStyle = base; cx.lineWidth = 1;
+      cx.beginPath(); cx.moveTo(0, s.h - 0.5); cx.lineTo(s.w, s.h - 0.5); cx.stroke();
+      cx.fillStyle = stroke;
+      var bars = 28, gap = 2, bw = (s.w - gap * (bars - 1)) / bars;
+      for (var b = 0; b < bars; b++) {
+        var octave = b / (bars - 1);
+        var hgt = (1 - octave * slope * 0.42) * (s.h - 4);
+        hgt = Math.max(3, hgt);
+        cx.globalAlpha = 0.85;
+        cx.fillRect(b * (bw + gap), s.h - hgt, bw, hgt);
+      }
+      cx.globalAlpha = 1;
+    }
+  }
+
+  function resizeAll() {
+    traceSize = sizeCanvas(trace, tctx);
+    drawTrace();
+    drawSpectra();
+  }
+
+  // ---------- Events ----------
+  function choosePreset(id) {
+    var keepVolume = state.volume;
+    state = Object.assign({ preset: id, volume: keepVolume }, presetSettings(id));
+    afterChange(true);
+    if (playing) scheduleTimer();
+  }
+  function afterChange(smooth) {
+    saveState();
+    renderReadout();
+    applyAudio(smooth);
+    if (!playing || reduceMotion) drawTrace();
+  }
+
+  $("play").addEventListener("click", function () { if (playing) stop(); else start(); });
+  $("beat").addEventListener("input", function (e) { state.beat = parseFloat(e.target.value); afterChange(true); });
+  $("carrier").addEventListener("input", function (e) { state.carrier = parseInt(e.target.value, 10); afterChange(true); });
+  $("mix").addEventListener("input", function (e) { state.mix = parseInt(e.target.value, 10); afterChange(true); });
+  $("volume").addEventListener("input", function (e) { state.volume = parseInt(e.target.value, 10); afterChange(true); });
+  $("noise-seg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    state.noise = b.dataset.noise; afterChange(true);
+  });
+  $("timer-seg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    state.minutes = parseInt(b.dataset.min, 10);
+    saveState(); renderReadout();
+    if (playing) scheduleTimer(); else renderTimer();
+  });
+  $("reset").addEventListener("click", function () { choosePreset(state.preset); });
+  document.addEventListener("keydown", function (e) {
+    if (e.code === "Space" && e.target === document.body) { e.preventDefault(); $("play").click(); }
+  });
+
+  var resizeTimer = null;
+  window.addEventListener("resize", function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(resizeAll, 120); });
+  if (window.matchMedia) {
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    var redraw = function () { drawTrace(); drawSpectra(); };
+    if (mq.addEventListener) mq.addEventListener("change", redraw); else if (mq.addListener) mq.addListener(redraw);
+    new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  }
+
+  // ---------- Boot ----------
+  renderPresets();
+  renderBands();
+  renderReadout();
+  renderTransport();
+  renderTimer();
+  resizeAll();
+})();
+</script>
+</body>
+</html>
